@@ -21,12 +21,12 @@ class Phasor:
     def _draw(self, value, title=''):
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
-        ax.arrow(0, 0, np.cos(value), np.sin(value), color='red', head_length=0.1, head_width=0.1)
-        ax.spines['left'].set_position('center')
-        ax.spines['bottom'].set_position('center')
-        ax.spines['right'].set_color('none')
-        ax.spines['top'].set_color('none')
-        plt.xlim(-1.5, 1.5)
+        ax.arrow(0, 0, np.cos(value), np.sin(value), color='red', head_length=0.1, head_width=0.1)  # make arrow for given angle
+        ax.spines['left'].set_position('center')  # --- properly
+        ax.spines['bottom'].set_position('center')  # - show
+        ax.spines['right'].set_color('none')  # ------- all
+        ax.spines['top'].set_color('none')  # --------- axes
+        plt.xlim(-1.5, 1.5)  # set axes limit for clear image
         plt.ylim(-1.5, 1.5)
         plt.title(title)
         fig.show()
