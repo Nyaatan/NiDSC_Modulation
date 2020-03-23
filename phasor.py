@@ -30,3 +30,4 @@ class Phasor:
         plt.ylim(-1.5, 1.5)
         plt.title(title)
         fig.show()
+        fig.savefig('plots/'+title+'.png')
