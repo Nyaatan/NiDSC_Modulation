@@ -7,7 +7,11 @@ import matplotlib.pyplot as plt
 import settings
 import json
 import os
+import shutil
+
 length = settings.signal_length
+if 'plots' in os.listdir():
+    shutil.rmtree('plots')
 os.mkdir('plots')
 
 mod = md.Modulator()
@@ -20,10 +24,12 @@ ph = phasor.Phasor()
 
 if not settings.only_qpsk:
     x, y = mod.modulate_bpsk(a)  # modulate the signal
-    plt.plot(x, y)
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+    ax.plot(x, y)
     plt.title('BPSK modulation')
-    plt.show()  # plot the signal
-    plt.savefig('plots/BPSK modulation.png')
+    fig.show()  # plot the signal
+    fig.savefig('plots/BPSK modulation.png')
     i = 0
     for bit in raw:  # plot phasors for every bit
         i += 1
@@ -37,10 +43,12 @@ if not settings.only_bpsk:
               for i in range(len(raw)) if i % 2 == 0]  # pair bits for qpsk modulation
 
     x, y = mod.modulate_qpsk(a)  # modulate the signal
-    plt.plot(x, y)
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    ax.plot(x, y)
     plt.title('QPSK modulation')
-    plt.show()  # plot the signal
-    plt.savefig('plots/QPSK modulation.png')
+    fig.show()  # plot the signal
+    fig.savefig('plots/QPSK modulation.png')
     i = 0
     for bit in paired:  # plot phasors for every pair
         i += 1
