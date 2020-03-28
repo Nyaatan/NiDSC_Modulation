@@ -36,7 +36,7 @@ class Modulator:
                 y = np.append(y, np.cos(5 / 4 * np.pi + np.pi * self.f * x / self.fs))
             elif pair == (1, 1):
                 y = np.append(y, np.cos(7 / 4 * np.pi + np.pi * self.f * x / self.fs))
-        x = np.linspace(0, signal.size * np.pi, y.size)
+        x = np.linspace(0, signal.size * np.pi/2, y.size)
         return x, y
 
 
