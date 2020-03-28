@@ -29,14 +29,14 @@ class Modulator:
                   for i in range(len(signal)) if i % 2 == 0]  # pair the signal
         for pair in paired:  # modulate pairs - cos(1/4pi+Ot) for (1, 0), cos(3/4pi+Ot) for (0, 0),
             if pair == (1, 0):  # cos(5/4pi+Ot) for (0, 1), cos(7/4pi+Ot) for (1, 1)
-                y = np.append(y, np.cos(1 / 4 * np.pi + np.pi * self.f * x / self.fs))
+                y = np.append(y, np.cos(1 / 4 * np.pi + np.pi * 2 * self.f * x / self.fs))
             elif pair == (0, 0):
-                y = np.append(y, np.cos(3 / 4 * np.pi + np.pi * self.f * x / self.fs))
+                y = np.append(y, np.cos(3 / 4 * np.pi + np.pi * 2 * self.f * x / self.fs))
             elif pair == (0, 1):
-                y = np.append(y, np.cos(5 / 4 * np.pi + np.pi * self.f * x / self.fs))
+                y = np.append(y, np.cos(5 / 4 * np.pi + np.pi * 2 * self.f * x / self.fs))
             elif pair == (1, 1):
-                y = np.append(y, np.cos(7 / 4 * np.pi + np.pi * self.f * x / self.fs))
-        x = np.linspace(0, signal.size * np.pi/2, y.size)
+                y = np.append(y, np.cos(7 / 4 * np.pi + np.pi * 2 * self.f * x / self.fs))
+        x = np.linspace(0, signal.size * np.pi, y.size)
         return x, y
 
 
