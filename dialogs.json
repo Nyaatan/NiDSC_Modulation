@@ -1,3 +1,9 @@
 {
-  "settings_not_found": "No settings.py file found. Using default settings."
+  "settings_not_found": "No settings.py file found. Using default settings.",
+  "plotting": "Plotting %s...",
+  "sig_load": "Loading signal...",
+  "modulating": "Modulating %s signal...",
+  "sending": "Sending %s signal...",
+  "demodulating": "Demodulating %s signal...",
+  "filtering": "Filtering %s signal..."
 }

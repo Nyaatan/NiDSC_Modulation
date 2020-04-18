@@ -1,7 +1,10 @@
 import numpy as np
-
+import csv
 import modulator as md
 import phasor
+from approximate import Approximator
+from channel import Channel
+from receiver import Receiver
 from sysfun import *
 
 dialogs = json_load("dialogs.json")
@@ -20,50 +23,118 @@ except ModuleNotFoundError:
         qpsk_title = 'QPSK modulation'
         bpsk_title = 'BPSK modulation'
         save_plots = True
+        phasor_title_qpsk = "QPSK. Bit pair no. %d - (%d, %d)"
+        phasor_title_bpsk = "BPSK. Bit no. %d - %d"
+        fs = 500
+        f = 1
+
 
     log_err(dialogs["settings_not_found"])
     settings = Defaults()
 
-rmkdir(settings.plot_dir)  # make/remake plots directory
 
-mod = md.Modulator()
+def main():
+    rmkdir(settings.plot_dir)  # make/remake plots directory
 
-raw = load_signal(settings.signal_path, settings.signal_length)  # create or load signal array (details in sysfun)
+    mod = md.Modulator(settings.fs, settings.f)
 
-a = np.array(raw)  # create a numpy array from raw bits
-ph = phasor.Phasor()
+    print(dialogs['sig_load'])
+    raw = load_signal(settings.signal_path, settings.signal_length)  # create or load signal array (details in sysfun)
 
-if not settings.only_qpsk:
-    x, y = mod.modulate_bpsk(a)  # modulate the signal
+    a = np.array(raw)  # create a numpy array from raw bits
+    ph = phasor.Phasor()
+    channel = Channel()
+    receiverB = Receiver('bpsk')
+    receiverQ = Receiver('qpsk')
+    modulated = {}
+    bers = {}
 
-    path = None
-    if settings.save_plots:
-        path = settings.plot_dir + settings.bpsk_filename
+    if not settings.only_qpsk:
+        print(dialogs['modulating'] % "BPSK")
+        x, y = mod.modulate_bpsk(a)  # modulate the signal
+        modulated['bpsk'] = {
+            'signal': y,
+            'linspace': x
+        }
 
-    full_plot(x, y, settings.bpsk_title, path=path)
+        path = None
+        if settings.save_plots:
+            path = settings.plot_dir + settings.bpsk_filename
 
-    i = 0
-    for bit in raw:  # plot phasors for every bit
-        i += 1
-        ph.draw(bit, mode='bpsk', title=settings.phasor_title_bpsk % (i, bit))
+        print(dialogs['plotting'] % settings.bpsk_filename)
+        full_plot(x, y, settings.bpsk_title, path=path)  # plot BPSK modulated signal
 
-if not settings.only_bpsk:
-    if len(raw) % 2 is not 0:
-        raw.append(0)  # make sure signal can be paired
-        a = np.array(raw)
+        i = 0
+        if settings.plot_phasors:
+            for bit in raw:  # plot phasors for every bit
+                i += 1
+                print(dialogs['plotting'] % settings.phasor_title_bpsk % (i, bit))
+                ph.draw(bit, mode='bpsk', title=settings.phasor_title_bpsk % (i, bit))
 
-    paired = [(raw[i], raw[i + 1])
-              for i in range(len(raw)) if i % 2 == 0]  # pair bits for qpsk modulation
+        print(dialogs['sending'] % 'BPSK')
+        channel.send(modulated['bpsk']['signal'], receiverB)  # send signal to receiver
+        print(dialogs['plotting'] % "received BPSK signal")
+        # plot received signal
+        full_plot(modulated['bpsk']['linspace'], receiverB.received_signal, title='Received %s signal' % 'BPSK')
 
-    x, y = mod.modulate_qpsk(a)  # modulate the signal
+        print(dialogs['demodulating'] % "received BPSK")
+        receiverB.demodulate()  # demodulate signal
 
-    path = None
-    if settings.save_plots:
-        path = settings.plot_dir + settings.qpsk_filename
+        print("Plotting phasor cloud...")
+        # draw phasor cloud
+        ph.draw_cloud(receiverB.demodulated_signal, 'Received BPSK signal phasor cloud')
 
-    full_plot(x, y, settings.qpsk_title, path=path)
+        ber = BER(raw, receiverB.bits)  # calculate ber
+        bers['bpsk'] = ber
+        print("BPSK BER: %d" % ber)
 
-    i = 0
-    for bit in paired:  # plot phasors for every pair
-        i += 1
-        ph.draw(bit, mode='qpsk', title=settings.phasor_title_qpsk % (i, bit[0], bit[1]))
+    if not settings.only_bpsk:
+        if len(raw) % 2 is not 0:
+            raw.append(0)  # make sure signal can be paired
+            a = np.array(raw)
+
+        paired = [(raw[i], raw[i + 1])
+                  for i in range(len(raw)) if i % 2 == 0]  # pair bits for qpsk modulation
+
+        print(dialogs['modulating'] % "QPSK")
+
+        x, y = mod.modulate_qpsk(a)  # modulate the signal
+        modulated['qpsk'] = {
+            'signal': y,
+            'linspace': x
+        }
+
+        path = None
+        if settings.save_plots:
+            path = settings.plot_dir + settings.qpsk_filename
+
+        print(dialogs['plotting'] % settings.bpsk_filename)
+        full_plot(x, y, settings.qpsk_title, path=path)
+
+        i = 0
+        if settings.plot_phasors:
+            for bit in paired:  # plot phasors for every pair
+                i += 1
+                print(dialogs['plotting'] % settings.phasor_title_qpsk % (i, bit))
+                ph.draw(bit, mode='qpsk', title=settings.phasor_title_qpsk % (i, bit[0], bit[1]))
+
+        print(dialogs['sending'] % 'QPSK')
+        channel.send(modulated['qpsk']['signal'], receiverQ)  # send signal to receiver
+        print(dialogs['plotting'] % "received QPSK signal")
+        # plot received signal
+        full_plot(modulated['qpsk']['linspace'], receiverQ.received_signal, title='Received %s signal' % 'QPSK')
+
+        print(dialogs['demodulating'] % "received QPSK")
+        receiverQ.demodulate()  # demodulate signal
+
+        print("Plotting phasor cloud...")
+        ph.draw_cloud(receiverQ.demodulated_signal, 'Received QPSK signal phasor cloud')  # draw phasor cloud
+
+        ber = BER(paired, receiverQ.bits)  # calculate BER
+        bers['qpsk'] = ber
+        print("QPSK BER: %d" % ber)
+
+    log_result(bers)
+
+
+main()

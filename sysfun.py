@@ -5,6 +5,8 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from numpy.random.mtrand import rand
 
+import settings
+
 
 def log_err(msg):  # log error message to log.txt
     log_file = open('log.txt', 'a')
@@ -22,7 +24,9 @@ def json_load(path):
     return json.load(open(path))
 
 
-def full_plot(x, y, title, path=None):
+def full_plot(x, y, title="", path=None):
+    if not settings.plot:
+        return
     fig = plt.figure()
 
     ax = fig.add_subplot(1, 1, 1)  # create a figure and add plot
@@ -43,3 +47,35 @@ def load_signal(path, length=0, rand_fun=rand):
     # load array of bits from JSON file if a signal path is set
     else:
         return json_load(path)
+
+
+def BER(sent, received):  # calculates BER
+    return sum(sent[i] != received[i] for i in range(0, len(sent)))
+
+
+def log_result(bers):
+    file = open('result.txt', 'a')
+    print("-" * 30 +
+          '\n' +
+          "Signal frequency: " + str(settings.f) + '\n' +
+          "Sampling frequency: " + str(settings.fs) + '\n' +
+          "Signal length: " + str(settings.signal_length) + '\n' +
+          "Amplitude noise standard deviation: " + str(settings.amplitude_deviation) + '\n' +
+          "Phase noise standard deviation: " + str(settings.phase_deviation) + '\n' +
+          "-" * 30, file=file)
+    if not settings.only_qpsk:
+        print(
+            "BPSK BER: " + str(bers['bpsk']) + '\n' +
+            '-' * 30, file=file)
+    else:
+        print(
+            "BPSK module is offline\n"+
+            '-' * 30, file=file)
+    if not settings.only_bpsk:
+        print(
+            "QPSK BER: " + str(bers['qpsk']) + '\n' +
+            '-' * 30, file=file)
+    else:
+        print(
+            "QPSK module is offline\n" +
+            '-' * 30, file=file)
