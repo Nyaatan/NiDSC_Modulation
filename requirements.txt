@@ -51,7 +51,7 @@ more-itertools==8.2.0
 multidict==4.5.2
 mysql-connector-python==8.0.16
 networkx==2.3
-nltk==3.4.4
+nltk==3.4.5
 numpy==1.16.2
 opencv-python==4.1.2.30
 packaging==20.3
