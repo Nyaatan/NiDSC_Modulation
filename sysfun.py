@@ -49,8 +49,12 @@ def load_signal(path, length=0, rand_fun=rand):
         return json_load(path)
 
 
-def BER(sent, received):  # calculates BER
+def bit_errors(sent, received):  # calculates incorrectly received bits
     return sum(sent[i] != received[i] for i in range(0, len(sent)))
+
+
+def BER(error_bits, signal_length):
+    return error_bits/signal_length
 
 
 def log_result(bers):
@@ -64,6 +68,7 @@ def log_result(bers):
           "Phase noise standard deviation: " + str(settings.phase_deviation) + '\n' +
           "-" * 30, file=file)
     if not settings.only_qpsk:
+        print("BPSK Incorrectly received bits: " + str(bers['bpsk_raw']), file=file)
         print(
             "BPSK BER: " + str(bers['bpsk']) + '\n' +
             '-' * 30, file=file)
@@ -72,6 +77,7 @@ def log_result(bers):
             "BPSK module is offline\n"+
             '-' * 30, file=file)
     if not settings.only_bpsk:
+        print("QPSK Incorrectly received bits: " + str(bers['qpsk_raw']), file=file)
         print(
             "QPSK BER: " + str(bers['qpsk']) + '\n' +
             '-' * 30, file=file)

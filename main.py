@@ -84,9 +84,12 @@ def main():
         # draw phasor cloud
         ph.draw_cloud(receiverB.demodulated_signal, 'Received BPSK signal phasor cloud')
 
-        ber = BER(raw, receiverB.bits)  # calculate ber
+        err_bits = bit_errors(raw, receiverB.bits)
+        bers['bpsk_raw'] = err_bits
+        ber = BER(err_bits, settings.signal_length)  # calculate ber
         bers['bpsk'] = ber
-        print("BPSK BER: %d" % ber)
+        print("BPSK Incorrectly received bits: %d" % err_bits)
+        print("BPSK BER: %g" % ber)
 
     if not settings.only_bpsk:
         if len(raw) % 2 is not 0:
@@ -130,9 +133,12 @@ def main():
         print("Plotting phasor cloud...")
         ph.draw_cloud(receiverQ.demodulated_signal, 'Received QPSK signal phasor cloud')  # draw phasor cloud
 
-        ber = BER(paired, receiverQ.bits)  # calculate BER
+        err_bits = bit_errors(paired, receiverQ.bits)
+        bers['qpsk_raw'] = err_bits
+        ber = BER(err_bits, settings.signal_length)  # calculate BER
         bers['qpsk'] = ber
-        print("QPSK BER: %d" % ber)
+        print("QPSK Incorrectly received bits: %d" % err_bits)
+        print("QPSK BER: %g" % ber)
 
     log_result(bers)
 
