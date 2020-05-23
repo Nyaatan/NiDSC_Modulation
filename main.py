@@ -70,26 +70,39 @@ def main():
                 i += 1
                 print(dialogs['plotting'] % settings.phasor_title_bpsk % (i, bit))
                 ph.draw(bit, mode='bpsk', title=settings.phasor_title_bpsk % (i, bit))
+        if not settings.only_realistic:
+            print('Sending BPSK modulated signal to simple receiver')
+            channel.send_simple(modulated['bpsk']['signal'], receiverB)
+            print('Demodulating received BPSK signal (simple)')
+            receiverB.demodulate_simple()
 
-        print(dialogs['sending'] % 'BPSK')
-        channel.send(modulated['bpsk']['signal'], receiverB)  # send signal to receiver
-        print(dialogs['plotting'] % "received BPSK signal")
-        # plot received signal
-        full_plot(modulated['bpsk']['linspace'], receiverB.received_signal, title='Received %s signal' % 'BPSK')
+            err_bits = bit_errors(raw, receiverB.bits)
+            bers['bpsk_raw'] = err_bits
+            ber = BER(err_bits, settings.signal_length)  # calculate ber
+            bers['bpsk'] = ber
+            print("BPSK Incorrectly received bits (simple): %d" % err_bits)
+            print("BPSK BER: %g" % ber)
 
-        print(dialogs['demodulating'] % "received BPSK")
-        receiverB.demodulate()  # demodulate signal
+        if not settings.only_simple:
+            print(dialogs['sending'] % 'BPSK')
+            channel.send(modulated['bpsk']['signal'], receiverB)  # send signal to receiver
+            print(dialogs['plotting'] % "received BPSK signal")
+            # plot received signal
+            full_plot(modulated['bpsk']['linspace'], receiverB.received_signal, title='Received %s signal' % 'BPSK')
 
-        print("Plotting phasor cloud...")
-        # draw phasor cloud
-        ph.draw_cloud(receiverB.demodulated_signal, 'Received BPSK signal phasor cloud')
+            print(dialogs['demodulating'] % "received BPSK")
+            receiverB.demodulate()  # demodulate signal
 
-        err_bits = bit_errors(raw, receiverB.bits)
-        bers['bpsk_raw'] = err_bits
-        ber = BER(err_bits, settings.signal_length)  # calculate ber
-        bers['bpsk'] = ber
-        print("BPSK Incorrectly received bits: %d" % err_bits)
-        print("BPSK BER: %g" % ber)
+            print("Plotting phasor cloud...")
+            # draw phasor cloud
+            ph.draw_cloud(receiverB.demodulated_signal, 'Received BPSK signal phasor cloud')
+
+            err_bits = bit_errors(raw, receiverB.bits)
+            bers['bpsk_raw'] = err_bits
+            ber = BER(err_bits, settings.signal_length)  # calculate ber
+            bers['bpsk'] = ber
+            print("BPSK Incorrectly received bits: %d" % err_bits)
+            print("BPSK BER: %g" % ber)
 
     if not settings.only_bpsk:
         if len(raw) % 2 is not 0:
@@ -121,24 +134,38 @@ def main():
                 print(dialogs['plotting'] % settings.phasor_title_qpsk % (i, bit))
                 ph.draw(bit, mode='qpsk', title=settings.phasor_title_qpsk % (i, bit[0], bit[1]))
 
-        print(dialogs['sending'] % 'QPSK')
-        channel.send(modulated['qpsk']['signal'], receiverQ)  # send signal to receiver
-        print(dialogs['plotting'] % "received QPSK signal")
-        # plot received signal
-        full_plot(modulated['qpsk']['linspace'], receiverQ.received_signal, title='Received %s signal' % 'QPSK')
+        if not settings.only_realistic:
+            print('Sending QPSK modulated signal to simple receiver')
+            channel.send_simple(modulated['qpsk']['signal'], receiverQ)
+            print('Demodulating received QPSK signal (simple)')
+            receiverQ.demodulate_simple()
 
-        print(dialogs['demodulating'] % "received QPSK")
-        receiverQ.demodulate()  # demodulate signal
+            err_bits = bit_errors(paired, receiverQ.bits)
+            bers['qpsk_raw'] = err_bits
+            ber = BER(err_bits, settings.signal_length)  # calculate ber
+            bers['qpsk'] = ber
+            print("QPSK Incorrectly received bits (simple): %d" % err_bits)
+            print("QPSK BER: %g" % ber)
 
-        print("Plotting phasor cloud...")
-        ph.draw_cloud(receiverQ.demodulated_signal, 'Received QPSK signal phasor cloud')  # draw phasor cloud
+        if not settings.only_simple:
+            print(dialogs['sending'] % 'QPSK')
+            channel.send(modulated['qpsk']['signal'], receiverQ)  # send signal to receiver
+            print(dialogs['plotting'] % "received QPSK signal")
+            # plot received signal
+            full_plot(modulated['qpsk']['linspace'], receiverQ.received_signal, title='Received %s signal' % 'QPSK')
 
-        err_bits = bit_errors(paired, receiverQ.bits)
-        bers['qpsk_raw'] = err_bits
-        ber = BER(err_bits, settings.signal_length)  # calculate BER
-        bers['qpsk'] = ber
-        print("QPSK Incorrectly received bits: %d" % err_bits)
-        print("QPSK BER: %g" % ber)
+            print(dialogs['demodulating'] % "received QPSK")
+            receiverQ.demodulate()  # demodulate signal
+
+            print("Plotting phasor cloud...")
+            ph.draw_cloud(receiverQ.demodulated_signal, 'Received QPSK signal phasor cloud')  # draw phasor cloud
+
+            err_bits = bit_errors(paired, receiverQ.bits)
+            bers['qpsk_raw'] = err_bits
+            ber = BER(err_bits, settings.signal_length)  # calculate BER
+            bers['qpsk'] = ber
+            print("QPSK Incorrectly received bits: %d" % err_bits)
+            print("QPSK BER: %g" % ber)
 
     log_result(bers)
 

@@ -1,4 +1,4 @@
-signal_length = 1000  # Length of generated pseudorandom signal (default: 12)
+signal_length = 10000  # Length of generated pseudorandom signal (default: 12)
 fs = 80  # sampling frequency of signal (default: 500)
 f = 40  # frequency of cosine function (default: 1)
 amplitude_deviation = 0.5  # standard deviation of amplitude noise (default: 0.5)
@@ -7,8 +7,10 @@ phase_deviation = 30  # standard deviation of phase noise (default: 30)
 # turn modules on/off
 only_bpsk = False   # Perform only bpsk modulation (default: False)
 only_qpsk = False   # Perform only qpsk modulation (default: False)
+only_simple = True  # perform only simple demodulation
+only_realistic = False  # perform only realistic modulation
 plot_phasors = False  # False to turn off plotting phasors (default: True)
-save_plots = True  # False to disable saving plots (default: True)
+save_plots = False  # False to disable saving plots (default: True)
 plot = True  # Enable/Disable plotting graphs (default: True)
 
 # paths

@@ -20,7 +20,7 @@ class Modulator:
             if bit == 0:
                 y = np.append(y, np.cos(x*self.f))
             else:
-                y = np.append(y, np.cos(np.pi + x*self.f))
+                y = np.append(y, np.cos(np.pi + self.f*x))
             bar.update()
         x = np.linspace(0, signal.size * 2 * np.pi / self.f, y.size)  # create proper linear space for the plot
         return x, y
@@ -42,13 +42,10 @@ class Modulator:
                 y = np.append(y, np.cos(5 / 4 * np.pi + x*self.f))
             elif pair == (1, 1):
                 y = np.append(y, np.cos(7 / 4 * np.pi + x*self.f))
+                bar.update()
         x = np.linspace(0, signal.size * 2 *np.pi/self.f, y.size)
         return x, y
 
 
 if __name__ == '__main__':  # for testing, runs when modulator.py is run
-    a = np.array([round(rand(), 0) for i in range(0, 12)])
-    mod = Modulator()
-    x, y = mod.modulate_qpsk(a)
-    plt.plot(x, y)
-    plt.show()
+    pass
