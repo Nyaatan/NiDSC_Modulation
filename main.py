@@ -131,7 +131,7 @@ def main():
         if settings.plot_phasors:
             for bit in paired:  # plot phasors for every pair
                 i += 1
-                print(dialogs['plotting'] % settings.phasor_title_qpsk % (i, bit))
+                # print(dialogs['plotting'] % settings.phasor_title_qpsk % (i, bit))
                 ph.draw(bit, mode='qpsk', title=settings.phasor_title_qpsk % (i, bit[0], bit[1]))
 
         if not settings.only_realistic:

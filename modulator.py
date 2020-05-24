@@ -48,4 +48,7 @@ class Modulator:
 
 
 if __name__ == '__main__':  # for testing, runs when modulator.py is run
-    pass
+    print(np.cos(np.pi/4))
+    print(np.cos(3*np.pi/4))
+    print(np.cos(5*np.pi/4))
+    print(np.cos(7*np.pi/4))

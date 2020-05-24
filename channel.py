@@ -23,16 +23,16 @@ class Channel:
             i = 0
             du = np.random.normal(0, amplitude)  # generate values of noise
             dfi = np.random.normal(0, phase)
-            noised_signal = []
+            noised_signal = np.array([])
             bar = pyprind.ProgBar(signal.size, stream=sys.stdout)
-            for sample in signal:
-                i += 1
-                if i % settings.fs == 0:  # if all samples of given bit are deviated, generate new values
-                    du = np.random.normal(0, amplitude)
-                    dfi = np.random.normal(0, phase)
+            x = np.arange(0, 2 * np.pi / settings.f, step=2 * np.pi / (settings.fs * settings.f))
 
-                new_sample = du + np.cos(np.arccos(sample) + np.pi / 180 * dfi)  # add noise to sample
-                noised_signal.append(new_sample)
+            for i in range(signal.size//settings.fs):
+                du = np.random.normal(0, amplitude)
+                dfi = np.random.normal(0, phase)
+                new_sample = (1+du)*np.cos(np.pi/180 * dfi + np.arccos(signal[i*settings.fs]) +
+                                           x*settings.f)
+                noised_signal = np.append(noised_signal, new_sample)
                 bar.update()
             return np.array(noised_signal)
         elif mode == 'simple':
