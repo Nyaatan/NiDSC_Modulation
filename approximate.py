@@ -25,7 +25,6 @@ class Approximator:
     def _approximate(self):  # approximates signal to model function by minimizing cost function
         pars_start = np.array([np.random.uniform(0, 2*np.pi), 0])  # random first guess for minimizing function, uniform distribution
         m = fmin(self.Q, pars_start, args=(self.model, self.data,), disp=False)
-        print(m)
         return m
 
     def approximate(self):
@@ -34,7 +33,6 @@ class Approximator:
         f = 0
         if self.rangex.size >= 4:
             bp = [self.data[1][0], self.data[1][self.rangex.size // 4]]
-            print(bp)
             if bp[0] < 0:
                 if bp[1] < 0:
                     f = 3/4*np.pi

@@ -93,9 +93,9 @@ def main():
             print(dialogs['demodulating'] % "received BPSK")
             receiverB.demodulate()  # demodulate signal
 
-            print("Plotting phasor cloud...")
+            # print("Plotting phasor cloud...")
             # draw phasor cloud
-            ph.draw_cloud(receiverB.demodulated_signal, 'Received BPSK signal phasor cloud')
+            # ph.draw_cloud(receiverB.demodulated_signal, 'Received BPSK signal phasor cloud')
 
             err_bits = bit_errors(raw, receiverB.bits)
             bers['bpsk_raw'] = err_bits
@@ -157,8 +157,8 @@ def main():
             print(dialogs['demodulating'] % "received QPSK")
             receiverQ.demodulate()  # demodulate signal
 
-            print("Plotting phasor cloud...")
-            ph.draw_cloud(receiverQ.demodulated_signal, 'Received QPSK signal phasor cloud')  # draw phasor cloud
+            # print("Plotting phasor cloud...")
+            # ph.draw_cloud(receiverQ.demodulated_signal, 'Received QPSK signal phasor cloud')  # draw phasor cloud
 
             err_bits = bit_errors(paired, receiverQ.bits)
             bers['qpsk_raw'] = err_bits

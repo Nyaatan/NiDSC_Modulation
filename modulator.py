@@ -34,13 +34,13 @@ class Modulator:
         paired = [(signal[i], signal[i + 1])
                   for i in range(len(signal)) if i % 2 == 0]  # pair the signal
         for pair in paired:  # modulate pairs - cos(1/4pi+Ot) for (1, 0), cos(3/4pi+Ot) for (0, 0),
-            if pair == (1, 0):  # cos(5/4pi+Ot) for (0, 1), cos(7/4pi+Ot) for (1, 1)
+            if pair == (1.0, 0.0):  # cos(5/4pi+Ot) for (0, 1), cos(7/4pi+Ot) for (1, 1)
                 y = np.append(y, np.cos(1 / 4 * np.pi + x*self.f))
-            elif pair == (0, 0):
+            elif pair == (0.0, 0.0):
                 y = np.append(y, np.cos(3 / 4 * np.pi + x*self.f))
-            elif pair == (0, 1):
+            elif pair == (0.0, 1.0):
                 y = np.append(y, np.cos(5 / 4 * np.pi + x*self.f))
-            elif pair == (1, 1):
+            elif pair == (1.0, 1.0):
                 y = np.append(y, np.cos(7 / 4 * np.pi + x*self.f))
                 bar.update()
         x = np.linspace(0, signal.size * 2 *np.pi/self.f, y.size)

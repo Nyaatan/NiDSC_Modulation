@@ -4,6 +4,7 @@ import numpy as np
 import pyprind
 
 import settings
+from sysfun import full_plot
 
 
 class Channel:
@@ -30,7 +31,19 @@ class Channel:
             for i in range(signal.size//settings.fs):
                 du = np.random.normal(0, amplitude)
                 dfi = np.random.normal(0, phase)
-                new_sample = (1+du)*np.cos(np.pi/180 * dfi + np.arccos(signal[i*settings.fs]) +
+                if signal[i*settings.fs] == 1 or signal[i*settings.fs] == -1:
+                    f = np.arccos(signal[i*settings.fs])
+                elif signal[i*settings.fs] < 0:
+                    if signal[i*settings.fs+1] < signal[i*settings.fs]:
+                        f = 3/4*np.pi
+                    else:
+                        f = 5/4*np.pi
+                else:
+                    if signal[i*settings.fs+1] < signal[i*settings.fs]:
+                        f = 1/4*np.pi
+                    else:
+                        f = 7/4*np.pi
+                new_sample = (1+du)*np.cos(np.pi/180 * dfi + f +
                                            x*settings.f)
                 noised_signal = np.append(noised_signal, new_sample)
                 bar.update()
@@ -41,7 +54,19 @@ class Channel:
                 'amplitude': []
             }
             for i in range(signal.size//settings.fs):
+                ph = np.random.normal(0, phase)
                 result['amplitude'].append(signal[i*settings.fs]+np.random.normal(0, amplitude))
-                result['phase'].append(np.arccos(signal[i*settings.fs])+np.pi / 180 *np.random.normal(0, phase))
-
+                if signal[i*settings.fs] == 1 or signal[i*settings.fs] == -1:
+                    f = np.arccos(signal[i*settings.fs])
+                elif signal[i*settings.fs] < 0:
+                    if signal[i*settings.fs+1] < signal[i*settings.fs]:
+                        f = 3/4*np.pi
+                    else:
+                        f = 5/4*np.pi
+                else:
+                    if signal[i*settings.fs+1] < signal[i*settings.fs]:
+                        f = 1/4*np.pi
+                    else:
+                        f = 7/4*np.pi
+                result['phase'].append(f+np.deg2rad(ph))
             return result

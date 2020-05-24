@@ -28,27 +28,27 @@ class Receiver:
 
     def demodulate_simple(self):
         bar = pyprind.ProgBar(len(self.signal['phase']), stream=sys.stdout, title='Demodulating (simple)...')
-        for i in range(len(self.signal['phase'])):
-            if self.mode is 'bpsk':
-                for i in range(len(self.signal['phase'])):
-                    bit = 0
-                    if np.pi / 2 < self.signal['phase'][i] < 3 * np.pi / 2:
-                        bit = 1
-                    self.bits.append(bit)
-                    bar.update()
-            elif self.mode is 'qpsk':
-                self.bits = []
-                for i in range(len(self.signal['phase'])):
-                    if 0 < self.signal['phase'][i] <= np.pi / 2:
-                        bit = (1, 0)
-                    elif np.pi / 2 < self.signal['phase'][i] <= np.pi:
-                        bit = (0, 0)
-                    elif np.pi < self.signal['phase'][i] <= 3 * np.pi / 2:
-                        bit = (0, 1)
-                    else:
-                        bit = (1, 1)
-                    self.bits.append(bit)
-                    bar.update()
+
+        if self.mode is 'bpsk':
+            for i in range(len(self.signal['phase'])):
+                bit = 0
+                if np.pi / 2 < self.signal['phase'][i] < 3 * np.pi / 2:
+                    bit = 1
+                self.bits.append(bit)
+                bar.update()
+        elif self.mode is 'qpsk':
+            self.bits = []
+            for i in range(len(self.signal['phase'])):
+                if 0 < self.signal['phase'][i] <= np.pi / 2:
+                    bit = (1, 0)
+                elif np.pi / 2 < self.signal['phase'][i] <= np.pi:
+                    bit = (0, 0)
+                elif np.pi < self.signal['phase'][i] <= 3 * np.pi / 2:
+                    bit = (0, 1)
+                else:
+                    bit = (1, 1)
+                self.bits.append(bit)
+                bar.update()
 
     def demodulate(self):  # demodulates received signal
         self.demodulated_signal = {
