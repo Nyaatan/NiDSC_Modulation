@@ -53,7 +53,7 @@ def bit_errors(sent, received):  # calculates incorrectly received bits
     return sum(sent[i] != received[i] for i in range(0, len(sent)))
 
 
-def BER(error_bits, signal_length):
+def BER(error_bits, signal_length):  # calculates BER
     return error_bits/signal_length
 
 

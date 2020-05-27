@@ -72,9 +72,9 @@ def main():
                 ph.draw(bit, mode='bpsk', title=settings.phasor_title_bpsk % (i, bit))
         if not settings.only_realistic:
             print('Sending BPSK modulated signal to simple receiver')
-            channel.send_simple(modulated['bpsk']['signal'], receiverB)
+            channel.send_simple(modulated['bpsk']['signal'], receiverB)     # send signal to simple receiver
             print('Demodulating received BPSK signal (simple)')
-            receiverB.demodulate_simple()
+            receiverB.demodulate_simple()   # use simple demodulator to demodulate signal
 
             err_bits = bit_errors(raw, receiverB.bits)
             bers['bpsk_raw'] = err_bits
@@ -136,9 +136,9 @@ def main():
 
         if not settings.only_realistic:
             print('Sending QPSK modulated signal to simple receiver')
-            channel.send_simple(modulated['qpsk']['signal'], receiverQ)
+            channel.send_simple(modulated['qpsk']['signal'], receiverQ)     # send signal to simple receiver
             print('Demodulating received QPSK signal (simple)')
-            receiverQ.demodulate_simple()
+            receiverQ.demodulate_simple()   # use simple demodulator to demodulate signal
 
             err_bits = bit_errors(paired, receiverQ.bits)
             bers['qpsk_raw'] = err_bits

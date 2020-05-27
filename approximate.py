@@ -27,8 +27,7 @@ class Approximator:
         m = fmin(self.Q, pars_start, args=(self.model, self.data,), disp=False)
         return m
 
-    def approximate(self):
-        # full_plot(self.rangex, self.data[1])
+    def approximate(self):  # approximates signal to QPSK by checking the signal flow in it's first quarter
         a = np.max(self.data[1])
         f = 0
         if self.rangex.size >= 4:

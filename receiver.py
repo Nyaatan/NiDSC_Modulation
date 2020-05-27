@@ -21,25 +21,25 @@ class Receiver:
         self.received_signal = signal
         self.x = np.linspace(0, self.received_signal.size * 2 * np.pi, self.received_signal.size)
 
-    def receive_simple(self, signal):
+    def receive_simple(self, signal):   # receives simple signal and draws phasor cloud
         self.signal = signal
         p = Phasor()
         p.draw_cloud(signal, title='Deviated bits phasor cloud - %s' % self.mode.upper())
 
-    def demodulate_simple(self):
+    def demodulate_simple(self):    # simple demodulator
         bar = pyprind.ProgBar(len(self.signal['phase']), stream=sys.stdout, title='Demodulating (simple)...')
 
         if self.mode is 'bpsk':
             for i in range(len(self.signal['phase'])):
                 bit = 0
-                if np.pi / 2 < self.signal['phase'][i] < 3 * np.pi / 2:
+                if np.pi / 2 < self.signal['phase'][i] < 3 * np.pi / 2:  # determine, in which quarter of phasor the bit is
                     bit = 1
                 self.bits.append(bit)
                 bar.update()
         elif self.mode is 'qpsk':
             self.bits = []
             for i in range(len(self.signal['phase'])):
-                if 0 < self.signal['phase'][i] <= np.pi / 2:
+                if 0 < self.signal['phase'][i] <= np.pi / 2:  # determine, in which quarter of phasor the bit is
                     bit = (1, 0)
                 elif np.pi / 2 < self.signal['phase'][i] <= np.pi:
                     bit = (0, 0)

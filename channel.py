@@ -11,7 +11,7 @@ class Channel:
     def send(self, signal, receiver):  # adds noise to signal and sends it to receiver
         receiver.receive(self.add_noise(signal, settings.amplitude_deviation, settings.phase_deviation))
 
-    def send_simple(self, signal, receiver):
+    def send_simple(self, signal, receiver):    # sends parameters of noised signal to simple receiver
         receiver.receive_simple(self.add_noise(signal, settings.amplitude_deviation, settings.phase_deviation,
                                                mode='simple'))
 
@@ -20,7 +20,7 @@ class Channel:
         adds noise to signal by deviating each sample's amplitude and phase by a value generated randomly for each
         bit using normal distribution and given standard deviation of amplitude and phase
         """
-        if mode == 'realistic':
+        if mode == 'realistic':     # adds noise to signal and returns numpy array with values of noised signlal
             i = 0
             du = np.random.normal(0, amplitude)  # generate values of noise
             dfi = np.random.normal(0, phase)
@@ -31,7 +31,7 @@ class Channel:
             for i in range(signal.size//settings.fs):
                 du = np.random.normal(0, amplitude)
                 dfi = np.random.normal(0, phase)
-                if signal[i*settings.fs] == 1 or signal[i*settings.fs] == -1:
+                if signal[i*settings.fs] == 1 or signal[i*settings.fs] == -1:   # decode bit's phase
                     f = np.arccos(signal[i*settings.fs])
                 elif signal[i*settings.fs] < 0:
                     if signal[i*settings.fs+1] < signal[i*settings.fs]:
@@ -44,11 +44,11 @@ class Channel:
                     else:
                         f = 7/4*np.pi
                 new_sample = (1+du)*np.cos(np.pi/180 * dfi + f +
-                                           x*settings.f)
+                                           x*settings.f)    # add noise
                 noised_signal = np.append(noised_signal, new_sample)
                 bar.update()
             return np.array(noised_signal)
-        elif mode == 'simple':
+        elif mode == 'simple':  # decodes bits' phase and returns noised parameters
             result = {
                 'phase': [],
                 'amplitude': []
