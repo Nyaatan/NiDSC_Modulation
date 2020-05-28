@@ -59,5 +59,6 @@ class Phasor:
         fig.savefig('plots/' + title + '.png')
 
     def _add(self, value, ax, amplitude, title=''):
-        ax.arrow(0, 0, np.cos(value) * abs(amplitude), np.sin(value) * abs(amplitude),
-                 color='red', head_length=0.05, head_width=0.05, length_includes_head=True)  # add arrow
+        ax.scatter(np.cos(value) * abs(amplitude), np.sin(value) * abs(amplitude), color='red')
+        # ax.arrow(0, 0, np.cos(value) * abs(amplitude), np.sin(value) * abs(amplitude),
+        #         color='red', head_length=0.05, head_width=0.05, length_includes_head=True)  # add arrow
