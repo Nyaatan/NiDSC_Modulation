@@ -93,7 +93,7 @@ sklearn==0.0
 soupsieve==1.8
 SpeechRecognition==3.6.3
 sqlparse==0.3.0
-svglib==0.9.3
+svglib==0.9.4
 tensorboard==1.13.1
 tensorflow==1.13.1
 tensorflow-estimator==1.13.0
